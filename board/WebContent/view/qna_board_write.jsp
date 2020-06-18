@@ -1,5 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%> <%@include file="../include/header.jsp"%>
+pageEncoding="UTF-8"%> 
+<%@include file="../include/header.jsp"%>
+<style>
+	.text-info {
+	color: red;
+	font-size: 0.7rem;
+	}
+	span.error{
+	color: red;
+	font-size: 0.7rem;
+	}
+
+</style>
 <!-- Main content -->
 <section class="content">
   <div class="box box-primary">
@@ -7,7 +19,7 @@ pageEncoding="UTF-8"%> <%@include file="../include/header.jsp"%>
       <h3 class="box-title">Board Write</h3>
     </div>
     <div style="height:20px"></div>
-    <form action="" method="" role="form" id="writeForm">
+    <form action="../write.do" method="post" enctype="multipart/form-data" role="form" id="writeForm">
       <div class="box-body">
         <div class="form-group row">
           <label for="name" class="col-sm-2 col-form-label">작성자</label>
@@ -63,16 +75,17 @@ pageEncoding="UTF-8"%> <%@include file="../include/header.jsp"%>
         <div class="form-group row">
           <label for="file" class="col-sm-2 col-form-label">파일첨부</label>
           <div class="col-sm-10">
-            <input type="file" name="file" id="file" />
-            <small class="text-muted" id="file">(파일크기 : 2MB)</small>
+            <input type="file" name="attach" id="file" />
+            <small class="text-muted">(파일크기 : 2MB)</small>
+            <small id="file" class="text-info"></small>
           </div>
         </div>
         <div style="height:20px"></div>
         <div class="form-group text-center">
           <button type="submit" class="btn btn-primary">등록</button>
           <button type="reset" class="btn btn-danger">다시작성</button>
-          <button type="button" class="btn btn-warning" id="list">
-            목록보기
+          <button type="button" class="btn btn-warning" id="list" onclick="location.href='../list.do'">
+		            목록보기
           </button>
         </div>
         <div style="height:20px"></div>
@@ -85,7 +98,8 @@ pageEncoding="UTF-8"%> <%@include file="../include/header.jsp"%>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <!-- jquery-validation plugin -->
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/additional-methods.min.js"></script>
+<script src="../js/write.js"></script>
 <%@include file="../include/footer.jsp"%>
 
 
