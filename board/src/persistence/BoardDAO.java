@@ -77,7 +77,7 @@ public class BoardDAO {
 	}
 	public BoardVO viewArticle(int bno) {
 		
-		String sql = "select name, title, content, attach from board where bno = ?";
+		String sql = "select bno, name, title, content, attach from board where bno = ?";
 		BoardVO vo = null;
 		
 		try (Connection con = getConnection();
@@ -88,6 +88,7 @@ public class BoardDAO {
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next()) {
 				vo = new BoardVO();
+				vo.setBno(rs.getInt("bno"));
 				vo.setName(rs.getString("name"));
 				vo.setTitle(rs.getString("title"));
 				vo.setContent(rs.getString("content"));
@@ -98,6 +99,42 @@ public class BoardDAO {
 			e.printStackTrace();
 		}
 		return vo;
+	}
+	public int modifyArticle(BoardVO vo) {
+		int result = 0;
+		String sql = null;
+		if(vo.getAttach()!=null) {
+			sql = "update BOARD set title = ?, content = ?, attach = ? where password = ? and bno = ?";
+			try (Connection con = getConnection();
+					PreparedStatement pstmt = con.prepareStatement(sql)) {
+				
+				pstmt.setString(1, vo.getTitle());
+				pstmt.setString(2, vo.getContent());
+				pstmt.setString(3, vo.getAttach());
+				pstmt.setString(4, vo.getPassword());
+				pstmt.setInt(5, vo.getBno());
+				result = pstmt.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else {
+			sql = "update BOARD set title = ?, content = ? where password = ? and bno = ?";
+			try (Connection con = getConnection();
+					PreparedStatement pstmt = con.prepareStatement(sql)) {
+				
+				pstmt.setString(1, vo.getTitle());
+				pstmt.setString(2, vo.getContent());
+				pstmt.setString(3, vo.getPassword());
+				pstmt.setInt(4, vo.getBno());
+				result = pstmt.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		return result;
 	}
 	
 }
