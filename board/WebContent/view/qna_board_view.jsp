@@ -10,7 +10,7 @@
 			<h3 class="box-title">Read Board</h3>
 		</div>
 		<div style="height:20px"></div>
-		<form action="" method="post" role="form">
+		<form action="reply.do" method="post" role="form">
 			<div class="box-body">
 				<div class="form-group row">
 					<label for="name" class="col-sm-2 col-form-label">글쓴이</label>
@@ -58,6 +58,7 @@
 				</div>
 				<div style="height:20px"></div>
 			</div>
+			
 		</form>
 	</div>
 </section>
@@ -75,9 +76,17 @@ $(function(){
 	$("#list").click(function(){
 		location.href="list.do";
 	})
-	
+	$("#reply").click(function(){
+		formObj.attr("action","replyView.do");
+		formObj.submit();
+	})
 	$("#modify").click(function(){
 		formObj.attr("action","modify.do");
+		formObj.submit();
+	})
+	
+	$("#delete").click(function(){
+		formObj.attr("action","view/qna_board_pwdCheck.jsp");
 		formObj.submit();
 	})
 		
