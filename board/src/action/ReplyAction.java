@@ -1,5 +1,7 @@
 package action;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +31,13 @@ public class ReplyAction implements Action {
 		int re_seq = Integer.parseInt(req.getParameter("re_seq"));
 		int re_lev = Integer.parseInt(req.getParameter("re_lev"));
 
+		
+		int page = Integer.parseInt(req.getParameter("page"));
+		String criteria = req.getParameter("criteria");
+		String keyword = URLEncoder.encode(req.getParameter("keyword"),"utf-8");
+		
+		
+		
 		BoardDAO dao = new BoardDAO();
 		BoardVO vo = new BoardVO(); 
 		
@@ -42,7 +51,9 @@ public class ReplyAction implements Action {
 		vo.setRe_lev(re_lev);
 				
 		if(dao.replyArticle(vo)==0) {
-			path = "replyView.do?bno="+bno;
+			path = "replyView.do?bno="+bno+"&page="+page+"&criteria="+criteria+"&keyword="+keyword;
+		}else {
+			path += "?page="+page+"&criteria="+criteria+"&keyword="+keyword;
 		}
 		
 		

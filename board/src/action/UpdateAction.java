@@ -1,5 +1,6 @@
 package action;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,8 +30,14 @@ public class UpdateAction implements Action {
 		String password = uploadMap.get("password");
 		String attach = uploadMap.get("attach");
 		
+		String page = uploadMap.get("page");
+		String criteria = uploadMap.get("criteria");
+		String keyword = URLEncoder.encode(uploadMap.get("keyword"),"utf-8");
+		
+		
 		BoardDAO dao = new BoardDAO();
 		BoardVO vo = new BoardVO();
+		
 		vo.setBno(bno);
 		vo.setName(name);
 		vo.setTitle(title);
@@ -39,12 +46,13 @@ public class UpdateAction implements Action {
 		
 		if(uploadMap.containsKey("attach")) {			
 			vo.setAttach(attach);
+	
 		}
 		
 		if(dao.modifyArticle(vo)==0) {
-			path = "modify.do?bno="+bno;
+			path = "modify.do?bno="+bno+"&page="+page+"&criteria="+criteria+"&keyword="+keyword;
 		}else {
-			path="/view.do?bno="+bno;
+			path+="?bno="+bno+"&page="+page+"&criteria="+criteria+"&keyword="+keyword;
 		}
 		
 		

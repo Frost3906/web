@@ -13,6 +13,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import domain.BoardVO;
+import domain.SearchVO;
 
 public class BoardDAO {
 	public static Connection getConnection() {
@@ -50,15 +51,43 @@ public class BoardDAO {
 		}
 		return result;
 	}
-	public List<BoardVO> ListArticle(){
+	public List<BoardVO> ListArticle(SearchVO search){
 		List<BoardVO> list = new ArrayList<BoardVO>();
+		int start = search.getPage()*search.getAmount();
+		int limit = (search.getPage()-1)*search.getAmount();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		
-		String sql ="select bno, title, name, regdate, readcount, re_lev from board order by re_ref desc, re_seq asc";
-		
-		try (Connection con = getConnection();
-			 PreparedStatement pstmt = con.prepareStatement(sql);
-			 ResultSet rs = pstmt.executeQuery()){
+		try {
+			con = getConnection();
+			StringBuilder sql = new StringBuilder();
+
+			if(!search.getCriteria().isEmpty()) {
+				sql.append("select bno, title, name, regdate, readcount, re_lev");
+				sql.append(" from (select rownum rn, A.* from (");
+				sql.append(" select bno, title, name, regdate, readcount, re_lev");
+				sql.append(" from board where "+search.getCriteria()+" like ? ");
+				sql.append(" order by re_ref desc, re_seq asc) A");
+				sql.append(" where rownum <= ?)");
+				sql.append(" where rn > ?");
+				pstmt = con.prepareStatement(sql.toString());
+				pstmt.setString(1,  "%"+search.getKeyword()+"%");
+				pstmt.setInt(2, start);
+				pstmt.setInt(3, limit);
 			
+			}else {
+				sql.append("select bno, title, name, regdate, readcount, re_lev");
+				sql.append(" from (select rownum rn, A.* from (");
+				sql.append(" select bno, title, name, regdate, readcount, re_lev");
+				sql.append(" from board order by re_ref desc, re_seq asc) A");
+				sql.append(" where rownum <= ?)");
+				sql.append(" where rn > ?");
+				pstmt = con.prepareStatement(sql.toString());
+				pstmt.setInt(1, start);
+				pstmt.setInt(2, limit);
+			}
+			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				BoardVO vo = new BoardVO();
 				vo.setBno(rs.getInt("bno"));
@@ -70,12 +99,14 @@ public class BoardDAO {
 				list.add(vo);
 			}
 			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		return list;
 	}
+	
+	
 	public BoardVO viewArticle(int bno) {
 		
 		String sql = "select bno, name, title, content, attach, re_ref, re_seq, re_lev from board where bno = ?";
@@ -260,6 +291,41 @@ public class BoardDAO {
 		}
 		
 		return search;
+	}
+	
+	//전체 행 수 가져오기
+	public int totalRow(String criteria, String keyword) {
+		int total = 0;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = getConnection();
+			if(!criteria.isEmpty()) {
+				//검색 리스트를 요청할 때
+				String sql1 = "select count(*) from board where "+criteria+" like ?";
+				pstmt = con.prepareStatement(sql1);
+				pstmt.setString(1, "%"+keyword+"%");
+			
+			}else {
+				//일반 리스트를 요청할 때
+				String sql = "select count(*) from board";
+				pstmt = con.prepareStatement(sql);
+			}
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				total = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(!pstmt.isClosed()) pstmt.close();
+				if(!con.isClosed()) con.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return total;
 	}
 	
 }

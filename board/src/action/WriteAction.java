@@ -34,6 +34,12 @@ public class WriteAction implements Action {
 		String attach = uploadMap.get("attach");
 		
 		
+		int page = 1;
+		String criteria = "";
+		String keyword = "";
+		
+		
+		
 		BoardDAO dao = new BoardDAO();
 		BoardVO vo = new BoardVO();
 		vo.setName(name);
@@ -46,6 +52,8 @@ public class WriteAction implements Action {
 		
 		if(dao.insertArticle(vo)==0) {
 			path = "view/qna_board_write.jsp";
+		}else {
+			path+= "?page="+page+"&criteria="+criteria+"&keyword="+keyword;
 		}
 		return new ActionForward(path, true);
 		

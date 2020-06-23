@@ -84,7 +84,7 @@ pageEncoding="UTF-8"%>
         <div class="form-group text-center">
           <button type="submit" class="btn btn-primary">등록</button>
           <button type="reset" class="btn btn-danger">다시작성</button>
-          <button type="button" class="btn btn-warning" id="list" onclick="location.href='../list.do'">
+          <button type="button" class="btn btn-warning" id="list" onclick="history.back()">
 		            목록보기
           </button>
         </div>

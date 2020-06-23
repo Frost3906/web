@@ -23,12 +23,14 @@ public class SearchAction implements Action {
 		String criteria = req.getParameter("criteria");
 		String keyword = req.getParameter("keyword");
 		
+		
+		
 		BoardDAO dao = new BoardDAO();
 		
 		List<BoardVO> list = dao.SearchArticle(criteria, keyword);
 		
-		req.setAttribute("list", list);
-		req.setAttribute("search", new SearchVO(criteria, keyword));
+		//req.setAttribute("list", list);
+		//req.setAttribute("search", new SearchVO(criteria, keyword));
 		
 		
 		return new ActionForward(path, false);
