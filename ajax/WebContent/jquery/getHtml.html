@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div class="container">
+	<ul>
+		<li>메뉴1</li>
+		<li>메뉴2</li>
+		<li>메뉴3</li>
+		<li>메뉴4</li>
+	</ul>
+</div>
+<div></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$(function(){
+		$.ajax({
+			url:'../data/data2.html',
+			success:function(data){
+				console.log(data);
+				$("div:last-of-type").html(data);
+			},
+			error:function(xhr,textStatus,errorthrown){
+				alert(textStatus+" "+xhr.status);
+			}
+		})
+	})
+</script>
+
+
+</body>
+</html>

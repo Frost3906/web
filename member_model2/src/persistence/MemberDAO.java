@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -44,7 +45,8 @@ public class MemberDAO {
 		}
 		
 		public MemberVO login(String userid, String password) {
-			
+			// 정적쿼리 : 외부에서 입력된 데이터를 자료형에 맞게 지정된 위치에 바인딩시켜 쿼리를 수행하는 방식
+			//
 			String sql = "select userid, name from member where userid = ? and password = ?";
 			MemberVO vo = new MemberVO();
 			try (Connection con = getConnection();
@@ -64,7 +66,29 @@ public class MemberDAO {
 			}
 			return null;
 		}
-		
+//	 public MemberVO login(String userid, String password) {
+//			
+//			String sql = "select userid, name from member where userid = '"+userid+"' and password = '"+password+"'";
+//			MemberVO vo = new MemberVO();
+//			try (Connection con = getConnection();
+//				 Statement stmt = con.createStatement();){
+//				
+//				ResultSet rs = stmt.executeQuery(sql);
+//				
+//				if(rs.next()) {
+//					vo.setUserid(rs.getString("userid"));
+//					vo.setName(rs.getString("name"));
+//					return vo;
+//				}
+//				
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			return null;
+//		}
+	 
+	 
+	 
 		public int modifyPassword(String userid, String new_password, String current_password) {
 			String sql = "update member set password = ? where userid = ? and password = ?";
 			int result = 0;
