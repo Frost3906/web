@@ -141,6 +141,28 @@ public class MemberDAO {
 			return result;
 		}
 		
+		public boolean checkId(String userid) {
+			String sql = "select * from member where userid = ?";
+			boolean result = false;
+			
+			try (Connection con = getConnection();
+				 PreparedStatement pstmt = con.prepareStatement(sql)){
+				
+				pstmt.setString(1, userid);
+				ResultSet rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					return true;
+				}
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return result;
+			
+		}
 }
 	
 

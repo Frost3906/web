@@ -97,13 +97,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>		
 <script>
 $(function(){
-
+	
 	init();
 	
 	$("input[type='button']").click(function(){
 		
-		let url="http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml?key=60a7c40d6301bb8f21c71db32471680b&targetDt=";
-	
+		let url="http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=60a7c40d6301bb8f21c71db32471680b&targetDt="
 		//사용자가 선택한 날짜 가져오기
 		url += $("#txtYear").val()+$("#selMon").val()+$("#selDay").val();
 		console.log(url);
@@ -116,15 +115,15 @@ $(function(){
 				
 				let str="";
 				//사용자가 입력한 날짜에 집계처리가 안된 경우
-				if($(data).find("dailyBoxOffice").text()===""){
+				if(Object.keys(data.boxOfficeResult.dailyBoxOfficeList).length===0){
 					alert("데이터가 없습니다.");
 				}
-				
-				$(data).find("dailyBoxOffice").each(function(){
+				console.log(data.boxOfficeResult.dailyBoxOfficeList);
+				$(data.boxOfficeResult.dailyBoxOfficeList).each(function(i,element){
 					//순위 가져오기
-					str += $(this).find("rank").text()+" 위";
+					str += element.rank+" 위";
 					//증감 가져오기
-					var rankInten = parseInt($(this).find("rankInten").text());
+					var rankInten = parseInt(element.rankInten);
 				
 					if(rankInten > 0){
 						str += "(▲";
@@ -136,8 +135,8 @@ $(function(){
 				
 					str += rankInten+") : ";
 					//영화 이름 가져오기
-					var movieNm = $(this).find("movieNm").text()+"<br>";
-					var movieCd = $(this).find("movieCd").text();
+					var movieNm = element.movieNm+"<br>";
+					var movieCd = element.movieCd;
 					str += "<a href='#' onclick='javascript:show("+movieCd+")'>"+movieNm+"</a>";
 				
 					//관객수 가져오기
@@ -181,7 +180,7 @@ $(function(){
 })
 //영화 상세정보
 function show(movieCd){
-	let url ="http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.xml?key=60a7c40d6301bb8f21c71db32471680b&movieCd=";
+	let url = "	http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=60a7c40d6301bb8f21c71db32471680b&movieCd=";
 	url+=movieCd;
 	console.log(url);
 	
@@ -189,22 +188,25 @@ function show(movieCd){
 		url : url,
 		type : 'get',
 		success : function(data){
-			let str = "<ul>";
 			
-			let movieNm = $(data).find("movieNm").text();
-			let movieNmEn = $(data).find("movieNmEn").text();
-			let showTm = $(data).find("showTm").text();
-			let director = $(data).find("director").find("peopleNm").text();
+			console.log(data);
+			let str = "<ul>";
+			let movieInfo = data.movieInfoResult.movieInfo;
+			
+			let movieNm = movieInfo.movieNm;
+			let movieNmEn = movieInfo.movieNmEn;
+			let showTm = movieInfo.showTm;
+			let director = movieInfo.directors[0].peopleNm;
 			
 			let peopleNm = "";
 			
-			let length = $(data).find("actor").find("peopleNm").length;
+			let length = movieInfo.actors.length;
 			
-			$(data).find("actor").each(function(idx){
+			$.each(movieInfo.actors,function(idx,element){
 				if(idx == length -1){
-					peopleNm += $(this).find("peopleNm").text();
+					peopleNm += element.peopleNm;
 				}else{
-					peopleNm += $(this).find("peopleNm").text()+" , ";
+					peopleNm += element.peopleNm+" , ";
 				}
 			})
 			

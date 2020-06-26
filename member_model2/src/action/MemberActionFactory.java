@@ -22,6 +22,8 @@ public class MemberActionFactory {
 			action = new JoinAction("view/loginForm.jsp");
 		}else if(cmd.equals("/leave.do")) {
 			action = new LeaveAction("index.jsp");
+		}else if(cmd.equals("/checkId.do")) {
+			action = new CheckIdAction("view/checkid.jsp");
 		}
 		
 		return action;

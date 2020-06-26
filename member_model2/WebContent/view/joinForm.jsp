@@ -10,6 +10,7 @@
 			 <small id="userid" class="text-info"></small>
 		</div>
 	</div>
+	
 	<div class="form-group row justify-content-center">
 		<label for="pass1" class="col-sm-2 col-form-label">비밀번호</label>
 		<div class="col-sm-6">
